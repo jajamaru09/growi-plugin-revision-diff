@@ -10,7 +10,7 @@
     "build:watch": "vite build --watch",
     "preview": "vite preview"
   },
-  "growi-plugin": {
+  "growiPlugin": {
     "schemaVersion": "4",
     "types": [
       "script"
