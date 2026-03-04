@@ -48,10 +48,9 @@ export async function renderMarkdownToHtml(markdown: string): Promise<string> {
     };
   } }).growiFacade;
 
-  const options = growiFacade?.markdownRenderer?.optionsGenerators?.generateViewOptions?.();
-
-  if (options) {
-    try {
+  try {
+    const options = growiFacade?.markdownRenderer?.optionsGenerators?.generateViewOptions?.();
+    if (options) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let processor = unified() as any;
       if (options.remarkPlugins && Array.isArray(options.remarkPlugins)) {
@@ -65,9 +64,9 @@ export async function renderMarkdownToHtml(markdown: string): Promise<string> {
         }
       }
       return String(await processor.process(markdown));
-    } catch (e) {
-      console.warn('[growi-plugin-revision-diff] growiFacade rendering failed, falling back:', e);
     }
+  } catch (e) {
+    console.warn('[growi-plugin-revision-diff] growiFacade rendering failed, falling back:', e);
   }
 
   // フォールバック: 基本的なMarkdown→HTML変換
