@@ -1,44 +1,37 @@
 import { createPageChangeListener } from './src/growiNavigation';
-import * as sidebarMount from './src/sidebarMount';
-import type { PageChangeCallback } from './src/growiNavigation';
-
-const PLUGIN_NAME = 'growi-plugin-revision-diff';
+import type { GrowiPageContext } from './src/pageContext';
+import { mountSidebar, unmountSidebar } from './src/sidebarMount';
 
 declare global {
   interface Window {
-    pluginActivators: Record<
-      string,
-      {
-        activate: () => void;
-        deactivate: () => void;
-      }
-    >;
+    pluginActivators?: Record<string, { activate(): void; deactivate(): void }>;
   }
 }
 
-let listener: ReturnType<typeof createPageChangeListener> | null = null;
+const PLUGIN_NAME = 'growi-plugin-revision-diff';
 
-const onPageChange: PageChangeCallback = (ctx) => {
-  if (ctx.mode === 'edit') {
-    sidebarMount.unmount();
-  } else {
-    sidebarMount.mountOrUpdate(ctx.pageId);
-  }
-};
+// DEBUG
+console.log('[revision-diff DEBUG] client-entry loaded');
 
-// DEBUG: スクリプトのロード確認（console.log = Verboseフィルタ不要）
-console.log('[revision-diff DEBUG] client-entry loaded, registering pluginActivators');
+async function handlePageChange(ctx: GrowiPageContext): Promise<void> {
+  console.log('[revision-diff DEBUG] handlePageChange', ctx);
+  const pageId = ctx.pageId.replace('/', '');
+  mountSidebar(pageId);
+}
 
-window.pluginActivators = window.pluginActivators ?? {};
-window.pluginActivators[PLUGIN_NAME] = {
-  activate() {
-    console.log('[revision-diff DEBUG] activate() called');
-    listener = createPageChangeListener(onPageChange);
-    listener.start();
-  },
-  deactivate() {
-    listener?.stop();
-    listener = null;
-    sidebarMount.unmount();
-  },
-};
+const { start, stop } = createPageChangeListener(handlePageChange);
+
+function activate(): void {
+  console.log('[revision-diff DEBUG] activate() called');
+  start();
+}
+
+function deactivate(): void {
+  stop();
+  unmountSidebar();
+}
+
+if (window.pluginActivators == null) {
+  window.pluginActivators = {};
+}
+window.pluginActivators[PLUGIN_NAME] = { activate, deactivate };

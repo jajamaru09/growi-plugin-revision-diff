@@ -2,23 +2,31 @@ import React, { useState, useEffect } from 'react';
 import RevisionDiffModal from './RevisionDiffModal';
 
 interface RevisionDiffButtonProps {
-  pageId: string;
-  cssClass: string;
+  initialPageId: string;
+  buttonClass: string;
+  onRegisterUpdater: (fn: (id: string) => void) => void;
 }
 
-const RevisionDiffButton: React.FC<RevisionDiffButtonProps> = ({ pageId, cssClass }) => {
+const RevisionDiffButton: React.FC<RevisionDiffButtonProps> = ({
+  initialPageId,
+  buttonClass,
+  onRegisterUpdater,
+}) => {
+  const [pageId, setPageId] = useState(initialPageId);
   const [isOpen, setIsOpen] = useState(false);
 
-  // ページ遷移時にモーダルを閉じる
   useEffect(() => {
-    setIsOpen(false);
-  }, [pageId]);
+    onRegisterUpdater((newId) => {
+      setPageId(newId);
+      setIsOpen(false);
+    });
+  }, [onRegisterUpdater]);
 
   return (
     <>
       <button
         type="button"
-        className={`btn btn-outline-neutral-secondary rounded-pill py-1 px-lg-3 ${cssClass}`}
+        className={buttonClass}
         onClick={() => setIsOpen(true)}
         title="リビジョン差分確認"
       >
