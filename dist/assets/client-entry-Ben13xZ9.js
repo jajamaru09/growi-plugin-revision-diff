@@ -16817,9 +16817,7 @@ async function fetchRevisions(pageId) {
     throw new Error(`リビジョン取得に失敗しました: ${res.status}`);
   }
   const data = await res.json();
-  console.log("[revision-diff DEBUG] API response:", data);
-  const docs = data.docs ?? data.data ?? data;
-  return assignRevisionNos(Array.isArray(docs) ? docs : []);
+  return assignRevisionNos(data.revisions);
 }
 async function renderMarkdownToHtml(markdown) {
   const growiFacade = window.growiFacade;
@@ -17706,4 +17704,4 @@ if (window.pluginActivators == null) {
   window.pluginActivators = {};
 }
 window.pluginActivators[PLUGIN_NAME] = { activate, deactivate };
-//# sourceMappingURL=client-entry-BKDdopc6.js.map
+//# sourceMappingURL=client-entry-Ben13xZ9.js.map
