@@ -83,3 +83,4 @@ Growiがサポートするモダンブラウザに準拠：
 |---|---|
 | [#20260305-01-add-remark-gfm](.steering/20260305-01-add-remark-gfm/) | 「差分処理ライブラリ」「HTML差分実装制約」節に影響。`remark-gfm` を依存追加。`growiFacade.generateViewOptions` が使用可能な場合はそちらを優先し、失敗時は `remark-gfm` フォールバックを使用する方式に変更。 |
 | [#20260305-02-remove-remark-gfm](.steering/20260305-02-remove-remark-gfm/) | 「差分処理ライブラリ」「HTML差分実装制約」節に影響。`remark-gfm` を削除し、`growiFacade` のみに一本化。growiFacade 失敗時はエラー throw に変更。 |
+| [#20260305-03-iframe-html-diff](.steering/20260305-03-iframe-html-diff/) | 「差分処理ライブラリ」「HTML差分実装制約」「Growi Client API」節に影響。`growiFacade` を完全廃止し、隠し iframe でGrowiページを読み込んでDOMからHTMLを取得する方式に変更。`unified`/`remark-parse`/`remark-rehype`/`rehype-stringify` を依存から削除。 |

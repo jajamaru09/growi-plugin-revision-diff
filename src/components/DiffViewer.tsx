@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { diffLines } from 'diff';
 import htmldiff from 'htmldiff-js';
-import { renderMarkdownToHtml } from '../growiApi';
-import type { DiffMode } from '../types';
+import { extractRevisionHtml } from '../growiApi';
+import type { DiffMode, RevisionWithNo } from '../types';
 
 interface DiffViewerProps {
-  leftBody: string;
-  rightBody: string;
+  leftRevision: RevisionWithNo;
+  rightRevision: RevisionWithNo;
+  pageId: string;
   mode: DiffMode;
 }
 
@@ -32,10 +33,11 @@ const MarkdownDiffView: React.FC<{ leftBody: string; rightBody: string }> = ({
   );
 };
 
-const HtmlDiffView: React.FC<{ leftBody: string; rightBody: string }> = ({
-  leftBody,
-  rightBody,
-}) => {
+const HtmlDiffView: React.FC<{
+  leftRevision: RevisionWithNo;
+  rightRevision: RevisionWithNo;
+  pageId: string;
+}> = ({ leftRevision, rightRevision, pageId }) => {
   const [diffHtml, setDiffHtml] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +47,10 @@ const HtmlDiffView: React.FC<{ leftBody: string; rightBody: string }> = ({
     setLoading(true);
     setError(null);
 
-    Promise.all([renderMarkdownToHtml(leftBody), renderMarkdownToHtml(rightBody)])
+    Promise.all([
+      extractRevisionHtml(pageId, leftRevision._id),
+      extractRevisionHtml(pageId, rightRevision._id),
+    ])
       .then(([leftHtml, rightHtml]) => {
         if (cancelled) return;
         const diff = htmldiff.execute(leftHtml, rightHtml);
@@ -63,7 +68,7 @@ const HtmlDiffView: React.FC<{ leftBody: string; rightBody: string }> = ({
     return () => {
       cancelled = true;
     };
-  }, [leftBody, rightBody]);
+  }, [pageId, leftRevision._id, rightRevision._id]);
 
   if (loading) {
     return (
@@ -83,20 +88,12 @@ const HtmlDiffView: React.FC<{ leftBody: string; rightBody: string }> = ({
   );
 };
 
-const DiffViewer: React.FC<DiffViewerProps> = ({ leftBody, rightBody, mode }) => {
-  if (!leftBody && !rightBody) {
-    return (
-      <div className="growi-plugin-revision-diff-empty">
-        左右のリビジョンを選択してください
-      </div>
-    );
-  }
-
+const DiffViewer: React.FC<DiffViewerProps> = ({ leftRevision, rightRevision, pageId, mode }) => {
   if (mode === 'markdown') {
-    return <MarkdownDiffView leftBody={leftBody} rightBody={rightBody} />;
+    return <MarkdownDiffView leftBody={leftRevision.body} rightBody={rightRevision.body} />;
   }
 
-  return <HtmlDiffView leftBody={leftBody} rightBody={rightBody} />;
+  return <HtmlDiffView leftRevision={leftRevision} rightRevision={rightRevision} pageId={pageId} />;
 };
 
 export default DiffViewer;

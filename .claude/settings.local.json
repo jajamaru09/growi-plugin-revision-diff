@@ -7,7 +7,10 @@
       "Bash(curl -s \"https://raw.githubusercontent.com/jajamaru09/growi-plugin-attachement-viewer/main/src/utils/sidebarMount.tsx\")",
       "Bash(curl -s \"https://raw.githubusercontent.com/jajamaru09/growi-plugin-attachement-viewer/main/client-entry.tsx\")",
       "WebFetch(domain:docs.growi.org)",
-      "WebFetch(domain:dev.to)"
+      "WebFetch(domain:dev.to)",
+      "WebFetch(domain:growi.org)",
+      "WebFetch(domain:dev.growi.org)",
+      "WebFetch(domain:growi.readthedocs.io)"
     ]
   }
 }

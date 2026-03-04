@@ -1,4 +1,3 @@
-import { unified } from 'unified';
 import type { Revision, RevisionWithNo } from './types';
 
 function formatDate(iso: string): string {
@@ -33,36 +32,43 @@ export async function fetchRevisions(pageId: string): Promise<RevisionWithNo[]> 
   return assignRevisionNos(data.revisions);
 }
 
-export async function renderMarkdownToHtml(markdown: string): Promise<string> {
-  const growiFacade = (window as unknown as {
-    growiFacade?: {
-      markdownRenderer?: {
-        optionsGenerators?: {
-          generateViewOptions?: (path: string, options: Record<string, unknown>, toc: () => void) => {
-            remarkPlugins?: unknown[];
-            rehypePlugins?: unknown[];
-          };
-        };
-      };
-    };
-  }).growiFacade;
+const CONTENT_SELECTORS = [
+  '.growi-page-content',
+  '.wiki',
+  '[data-testid="page-body"]',
+  'main',
+];
 
-  const options = growiFacade?.markdownRenderer?.optionsGenerators?.generateViewOptions?.(
-    '',
-    { plantumlUri: null },
-    () => {},
-  );
-  if (options == null) {
-    throw new Error('growiFacade が利用できません');
+async function waitForContent(
+  iframe: HTMLIFrameElement,
+  timeout = 15000,
+): Promise<Element> {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    for (const sel of CONTENT_SELECTORS) {
+      const el = iframe.contentDocument?.querySelector(sel);
+      if (el && el.innerHTML.trim() !== '') return el;
+    }
+    await new Promise((r) => setTimeout(r, 300));
   }
+  throw new Error('コンテンツの読み込みがタイムアウトしました');
+}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let processor = (unified() as any).data('settings', { plantumlUri: '' });
-  for (const plugin of options.remarkPlugins ?? []) {
-    try { processor = processor.use(plugin); } catch { /* 無効なプラグインはスキップ */ }
+export async function extractRevisionHtml(pageId: string, revisionId: string): Promise<string> {
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1280px;height:900px;visibility:hidden';
+  document.body.appendChild(iframe);
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      iframe.onload = () => resolve();
+      iframe.onerror = () => reject(new Error('iframe 読み込みエラー'));
+      iframe.src = `${pageId}?revisionId=${encodeURIComponent(revisionId)}`;
+    });
+
+    const content = await waitForContent(iframe);
+    return content.innerHTML;
+  } finally {
+    if (document.body.contains(iframe)) document.body.removeChild(iframe);
   }
-  for (const plugin of options.rehypePlugins ?? []) {
-    try { processor = processor.use(plugin); } catch { /* 無効なプラグインはスキップ */ }
-  }
-  return String(await processor.process(markdown));
 }

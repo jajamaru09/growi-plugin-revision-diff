@@ -128,8 +128,9 @@ const RevisionDiffModal: React.FC<RevisionDiffModalProps> = ({ pageId, isOpen, o
           )}
           {!loading && !error && leftRevision && rightRevision && (
             <DiffViewer
-              leftBody={leftRevision.body}
-              rightBody={rightRevision.body}
+              leftRevision={leftRevision}
+              rightRevision={rightRevision}
+              pageId={pageId}
               mode={mode}
             />
           )}
