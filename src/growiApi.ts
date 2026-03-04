@@ -1,5 +1,6 @@
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import type { Revision, RevisionWithNo } from './types';
@@ -37,8 +38,48 @@ export async function fetchRevisions(pageId: string): Promise<RevisionWithNo[]> 
 }
 
 export async function renderMarkdownToHtml(markdown: string): Promise<string> {
+  const growiFacade = (window as unknown as {
+    growiFacade?: {
+      markdownRenderer?: {
+        optionsGenerators?: {
+          generateViewOptions?: (path: string, options: Record<string, unknown>, toc: () => void) => {
+            remarkPlugins?: unknown[];
+            rehypePlugins?: unknown[];
+          };
+        };
+      };
+    };
+  }).growiFacade;
+
+  try {
+    const options = growiFacade?.markdownRenderer?.optionsGenerators?.generateViewOptions?.(
+      '',
+      { plantumlUri: null },
+      () => {},
+    );
+    if (options) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let processor = unified() as any;
+      if (Array.isArray(options.remarkPlugins)) {
+        for (const plugin of options.remarkPlugins) {
+          processor = processor.use(plugin);
+        }
+      }
+      if (Array.isArray(options.rehypePlugins)) {
+        for (const plugin of options.rehypePlugins) {
+          processor = processor.use(plugin);
+        }
+      }
+      return String(await processor.process(markdown));
+    }
+  } catch {
+    // growiFacade が利用できない場合はフォールバック
+  }
+
+  // フォールバック: remark-gfm を含む基本パイプライン
   const result = await unified()
     .use(remarkParse)
+    .use(remarkGfm)
     .use(remarkRehype)
     .use(rehypeStringify)
     .process(markdown);

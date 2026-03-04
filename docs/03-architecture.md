@@ -76,3 +76,9 @@ Growiがサポートするモダンブラウザに準拠：
 - Firefox（最新2バージョン）
 - Safari（最新2バージョン）
 - Edge（最新2バージョン）
+
+## 変更履歴
+
+| ステアリング | 変更内容 |
+|---|---|
+| [#20260305-01-add-remark-gfm](.steering/20260305-01-add-remark-gfm/) | 「差分処理ライブラリ」「HTML差分実装制約」節に影響。`remark-gfm` を依存追加。`growiFacade.generateViewOptions` が使用可能な場合はそちらを優先し、失敗時は `remark-gfm` フォールバックを使用する方式に変更。 |
