@@ -59,10 +59,10 @@ export async function renderMarkdownToHtml(markdown: string): Promise<string> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let processor = unified() as any;
   for (const plugin of options.remarkPlugins ?? []) {
-    processor = processor.use(plugin);
+    try { processor = processor.use(plugin); } catch { /* 無効なプラグインはスキップ */ }
   }
   for (const plugin of options.rehypePlugins ?? []) {
-    processor = processor.use(plugin);
+    try { processor = processor.use(plugin); } catch { /* 無効なプラグインはスキップ */ }
   }
   return String(await processor.process(markdown));
 }

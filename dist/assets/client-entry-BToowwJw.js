@@ -8780,10 +8780,16 @@ async function renderMarkdownToHtml(markdown) {
   }
   let processor = unified();
   for (const plugin of options.remarkPlugins ?? []) {
-    processor = processor.use(plugin);
+    try {
+      processor = processor.use(plugin);
+    } catch {
+    }
   }
   for (const plugin of options.rehypePlugins ?? []) {
-    processor = processor.use(plugin);
+    try {
+      processor = processor.use(plugin);
+    } catch {
+    }
   }
   return String(await processor.process(markdown));
 }
@@ -9642,4 +9648,4 @@ if (window.pluginActivators == null) {
   window.pluginActivators = {};
 }
 window.pluginActivators[PLUGIN_NAME] = { activate, deactivate };
-//# sourceMappingURL=client-entry-CIMTn1xQ.js.map
+//# sourceMappingURL=client-entry-BToowwJw.js.map
