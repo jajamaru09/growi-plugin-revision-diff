@@ -16820,26 +16820,6 @@ async function fetchRevisions(pageId) {
   return assignRevisionNos(data.revisions);
 }
 async function renderMarkdownToHtml(markdown) {
-  const growiFacade = window.growiFacade;
-  try {
-    const options = growiFacade?.markdownRenderer?.optionsGenerators?.generateViewOptions?.();
-    if (options) {
-      let processor = unified();
-      if (options.remarkPlugins && Array.isArray(options.remarkPlugins)) {
-        for (const plugin of options.remarkPlugins) {
-          processor = processor.use(plugin);
-        }
-      }
-      if (options.rehypePlugins && Array.isArray(options.rehypePlugins)) {
-        for (const plugin of options.rehypePlugins) {
-          processor = processor.use(plugin);
-        }
-      }
-      return String(await processor.process(markdown));
-    }
-  } catch (e) {
-    console.warn("[growi-plugin-revision-diff] growiFacade rendering failed, falling back:", e);
-  }
   const result = await unified().use(remarkParse).use(remarkRehype).use(rehypeStringify).process(markdown);
   return String(result);
 }
@@ -17704,4 +17684,4 @@ if (window.pluginActivators == null) {
   window.pluginActivators = {};
 }
 window.pluginActivators[PLUGIN_NAME] = { activate, deactivate };
-//# sourceMappingURL=client-entry-C4xL1ja6.js.map
+//# sourceMappingURL=client-entry-Ctl-Q1FL.js.map

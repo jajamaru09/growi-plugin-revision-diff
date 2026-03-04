@@ -37,39 +37,6 @@ export async function fetchRevisions(pageId: string): Promise<RevisionWithNo[]> 
 }
 
 export async function renderMarkdownToHtml(markdown: string): Promise<string> {
-  const growiFacade = (window as unknown as { growiFacade?: {
-    markdownRenderer?: {
-      optionsGenerators?: {
-        generateViewOptions?: () => {
-          remarkPlugins?: unknown[];
-          rehypePlugins?: unknown[];
-        };
-      };
-    };
-  } }).growiFacade;
-
-  try {
-    const options = growiFacade?.markdownRenderer?.optionsGenerators?.generateViewOptions?.();
-    if (options) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let processor = unified() as any;
-      if (options.remarkPlugins && Array.isArray(options.remarkPlugins)) {
-        for (const plugin of options.remarkPlugins) {
-          processor = processor.use(plugin);
-        }
-      }
-      if (options.rehypePlugins && Array.isArray(options.rehypePlugins)) {
-        for (const plugin of options.rehypePlugins) {
-          processor = processor.use(plugin);
-        }
-      }
-      return String(await processor.process(markdown));
-    }
-  } catch (e) {
-    console.warn('[growi-plugin-revision-diff] growiFacade rendering failed, falling back:', e);
-  }
-
-  // フォールバック: 基本的なMarkdown→HTML変換
   const result = await unified()
     .use(remarkParse)
     .use(remarkRehype)
