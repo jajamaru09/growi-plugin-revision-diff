@@ -57,7 +57,7 @@ export async function renderMarkdownToHtml(markdown: string): Promise<string> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let processor = unified() as any;
+  let processor = (unified() as any).data('settings', { plantumlUri: '' });
   for (const plugin of options.remarkPlugins ?? []) {
     try { processor = processor.use(plugin); } catch { /* 無効なプラグインはスキップ */ }
   }

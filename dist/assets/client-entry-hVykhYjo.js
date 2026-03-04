@@ -8778,7 +8778,7 @@ async function renderMarkdownToHtml(markdown) {
   if (options == null) {
     throw new Error("growiFacade が利用できません");
   }
-  let processor = unified();
+  let processor = unified().data("settings", { plantumlUri: "" });
   for (const plugin of options.remarkPlugins ?? []) {
     try {
       processor = processor.use(plugin);
@@ -9648,4 +9648,4 @@ if (window.pluginActivators == null) {
   window.pluginActivators = {};
 }
 window.pluginActivators[PLUGIN_NAME] = { activate, deactivate };
-//# sourceMappingURL=client-entry-BToowwJw.js.map
+//# sourceMappingURL=client-entry-hVykhYjo.js.map
