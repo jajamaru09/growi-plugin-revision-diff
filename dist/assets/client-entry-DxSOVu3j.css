@@ -1,0 +1,177 @@
+/* ===== オーバーレイ ===== */
+.growi-plugin-revision-diff-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* ===== モーダル本体 ===== */
+.growi-plugin-revision-diff-modal {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  width: 90vw;
+  max-width: 1200px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== ヘッダー ===== */
+.growi-plugin-revision-diff-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8f9fa;
+  flex-shrink: 0;
+}
+
+.growi-plugin-revision-diff-title {
+  font-weight: 600;
+  font-size: 1rem;
+  flex: 1;
+}
+
+/* ===== モードタブ ===== */
+.growi-plugin-revision-diff-mode-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.growi-plugin-revision-diff-tab {
+  padding: 4px 14px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.growi-plugin-revision-diff-tab.active {
+  background: #0d6efd;
+  color: #fff;
+  border-color: #0d6efd;
+}
+
+/* ===== 閉じるボタン ===== */
+.growi-plugin-revision-diff-close {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #666;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.growi-plugin-revision-diff-close:hover {
+  background: #e0e0e0;
+}
+
+/* ===== セレクター行 ===== */
+.growi-plugin-revision-diff-selectors {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.growi-plugin-revision-diff-selector-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.growi-plugin-revision-diff-selector-label {
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.growi-plugin-revision-diff-selector {
+  flex: 1;
+}
+
+.growi-plugin-revision-diff-arrow {
+  font-size: 1.2rem;
+  color: #666;
+  flex-shrink: 0;
+}
+
+/* ===== ボディ ===== */
+.growi-plugin-revision-diff-body {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+}
+
+/* ===== ローディング / エラー / 空 ===== */
+.growi-plugin-revision-diff-loading,
+.growi-plugin-revision-diff-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.growi-plugin-revision-diff-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #dc3545;
+  font-size: 0.9rem;
+}
+
+/* ===== Markdown差分ビュー ===== */
+.growi-plugin-revision-diff-markdown-diff {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: monospace;
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.growi-plugin-revision-diff-line {
+  display: block;
+}
+
+.growi-plugin-revision-diff-added {
+  background-color: #e0ffe0;
+}
+
+.growi-plugin-revision-diff-removed {
+  background-color: #ffe0e0;
+  text-decoration: line-through;
+}
+
+/* ===== HTML差分ビュー ===== */
+.growi-plugin-revision-diff-html-diff {
+  line-height: 1.7;
+}
+
+.growi-plugin-revision-diff-html-diff ins {
+  background-color: #e0ffe0;
+  text-decoration: none;
+}
+
+.growi-plugin-revision-diff-html-diff del {
+  background-color: #ffe0e0;
+  text-decoration: line-through;
+}
