@@ -26,7 +26,7 @@ function assignRevisionNos(revisions: Revision[]): RevisionWithNo[] {
 }
 
 export async function fetchRevisions(pageId: string): Promise<RevisionWithNo[]> {
-  const res = await fetch(`/api/v3/revisions?pageId=${encodeURIComponent(pageId)}&limit=100`, {
+  const res = await fetch(`/api/v3/revisions/list?pageId=${encodeURIComponent(pageId)}&limit=100`, {
     credentials: 'include',
   });
   if (!res.ok) {

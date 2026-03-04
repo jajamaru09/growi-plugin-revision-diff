@@ -26,7 +26,7 @@ const RevisionDiffButton: React.FC<RevisionDiffButtonProps> = ({
     <>
       <button
         type="button"
-        className={buttonClass}
+        className={buttonClass.replace(/\bundefined\b/g, '').trim()}
         onClick={() => setIsOpen(true)}
         title="リビジョン差分確認"
       >
