@@ -5,13 +5,9 @@ export default defineConfig({
   plugins: [react()],
   build: {
     manifest: true,
-    lib: {
-      entry: 'client-entry.tsx',
-      formats: ['es'],
-    },
     rollupOptions: {
+      input: ['client-entry.tsx'],
       preserveEntrySignatures: 'strict',
-      external: ['react', 'react-dom'],
     },
   },
 });

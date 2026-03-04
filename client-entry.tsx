@@ -26,9 +26,13 @@ const onPageChange: PageChangeCallback = (ctx) => {
   }
 };
 
+// DEBUG: スクリプトのロード確認
+console.debug('[revision-diff DEBUG] client-entry loaded, registering pluginActivators');
+
 window.pluginActivators = window.pluginActivators ?? {};
 window.pluginActivators[PLUGIN_NAME] = {
   activate() {
+    console.debug('[revision-diff DEBUG] activate() called');
     listener = createPageChangeListener(onPageChange);
     listener.start();
   },

@@ -40,16 +40,30 @@ export function createPageChangeListener(callback: PageChangeCallback): {
 
   function start(): void {
     const nav = (window as unknown as { navigation?: EventTarget }).navigation;
-    if (!nav) return;
+    console.debug('[revision-diff DEBUG] start(): window.navigation=', nav, 'location.pathname=', location.pathname);
+    if (!nav) {
+      console.warn('[revision-diff DEBUG] Navigation API not available, falling back to manual fire');
+    }
     if (isListening) return;
     isListening = true;
-    nav.addEventListener('navigate', onNavigate);
+    if (nav) nav.addEventListener('navigate', onNavigate);
 
     const { pathname, hash } = location;
     const pageId = extractPageId(pathname);
+    console.debug('[revision-diff DEBUG] initial pathname=', pathname, 'pageId=', pageId);
     if (pageId) {
       const revisionId = new URL(location.href).searchParams.get('revisionId') ?? undefined;
       tryFire(pageId, hashToMode(hash), revisionId);
+    } else {
+      // DEBUG: pageId が取れない場合はURLパターンが合っていない
+      console.debug('[revision-diff DEBUG] pageId not extracted from pathname. Trying mountOrUpdate directly...');
+      // Growiがページ遷移後にこのスクリプトを実行する場合、pathが /page-path 形式のこともある
+      // その場合はpageIdとしてパス全体を渡してみる
+      const fallbackPageId = pathname.replace(/^\//, '');
+      if (fallbackPageId) {
+        console.debug('[revision-diff DEBUG] fallback: using pathname as pageId=', fallbackPageId);
+        tryFire(fallbackPageId, hashToMode(hash), undefined);
+      }
     }
   }
 
